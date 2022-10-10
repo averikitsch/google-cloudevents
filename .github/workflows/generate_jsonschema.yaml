@@ -26,7 +26,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Generate the JSON Schema
-        uses: ./.github/workflows/generate_jsonschema
+        run: echo '${{ toJSON(github) }}'
+        # uses: ./.github/workflows/generate_jsonschema
 
       - name: Create pull request for schema updates
         uses: googleapis/code-suggester@v4
@@ -36,7 +37,14 @@ jobs:
           command: pr
           upstream_owner: ${{ github.repository_owner }}
           upstream_repo: "google-cloudevents"
-          description: "Generated in GitHub action: https://github.com/${{ github.repository }}/actions/workflows/generate_jsonschema.yaml"
+          description: |
+              :robot: Auto-generated Pull Request.
+              Triggered by [${{github.event.repository.full_name}}#](https://github.com/${{github.event.repository.full_name}}/pull/1)
+
+              * **Generator configuration:** https://github.com/${{ github.repository }}/blob/${{ github.sha }}/.github/workflows/generate_jsonschema.yaml
+              * **Generator script:** https://github.com/${{ github.repository }}/blob/${{ github.sha }}/scripts/gen.sh
+              * **List of workflow runs:** https://github.com/${{ github.repository }}/actions/workflows/generate_jsonschema.yaml
+       
           title: "chore: Generate the JSON Schema" # PR title
           message: "chore: Generate the JSON Schema" # commit message
           branch: "main" # branch for forked repo
